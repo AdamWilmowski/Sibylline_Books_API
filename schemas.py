@@ -5,6 +5,7 @@ class PlainItemSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
     price = fields.Float(required=True)
+    status_points = fields.Int()
 
 
 class PlainCategorySchema(Schema):
@@ -20,12 +21,28 @@ class PlainTagSchema(Schema):
 class ItemUpdateSchema(Schema):
     name = fields.Str()
     price = fields.Float()
+    status_points = fields.Int()
     category_id = fields.Int()
+
+
+class HazardSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    severity_level = fields.Int(required=True)
+    items = fields.List(fields.Nested('PlainItemSchema'), dump_only=True)
+
+
+class HazardItemSchema(Schema):
+    hazard_id = fields.Int(required=True)
+    item_id = fields.Int(required=True)
+    hazard = fields.Nested(HazardSchema, dump_only=True)
+    item = fields.Nested(PlainItemSchema, dump_only=True)
 
 
 class ItemSchema(PlainItemSchema):
     category_id = fields.Int(required=True, load_only=True)
     category = fields.Nested(PlainCategorySchema(), dump_only=True)
+    hazards = fields.List(fields.Nested(HazardSchema()), dump_only=True)
 
 
 class CategorySchema(PlainCategorySchema):

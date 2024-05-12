@@ -15,14 +15,12 @@ blp = Blueprint("Categories", __name__, description="Operations on categories")
 
 
 @blp.route("/category/<int:category_id>")
-@require_api_key
 class Categories(MethodView):
     @blp.response(200, CategorySchema)
     def get(self, category_id):
         category = CategoryModel.query.get_or_404(category_id)
         return category
 
-    @jwt_required
     def delete(self, category_id):
         category = CategoryModel.query.get_or_404(category_id)
         db.session.delete(category)
@@ -31,7 +29,6 @@ class Categories(MethodView):
 
 
 @blp.route("/category")
-@require_api_key
 class CategoriesList(MethodView):
     @blp.response(201, CategorySchema(many=True))
     def get(self):
@@ -39,7 +36,6 @@ class CategoriesList(MethodView):
 
     @blp.arguments(CategorySchema)
     @blp.response(200, CategorySchema)
-    @jwt_required()
     def post(self, category_data):
         category = CategoryModel(**category_data)
         try:
