@@ -3,7 +3,7 @@ from flask import jsonify
 from blocklist import BLOCKLIST
 from functools import wraps
 from flask import request, jsonify
-from instance.secrets import VALID_API_KEYS
+from my_secrets import VALID_API_KEYS
 
 
 def require_api_key(func):
