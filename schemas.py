@@ -43,6 +43,7 @@ class ItemSchema(PlainItemSchema):
     category_id = fields.Int(required=True, load_only=True)
     category = fields.Nested(PlainCategorySchema(), dump_only=True)
     hazards = fields.List(fields.Nested(HazardSchema()), dump_only=True)
+    tags = fields.List(fields.Nested(PlainTagSchema()), dump_only=True)
 
 
 class CategorySchema(PlainCategorySchema):
@@ -51,7 +52,6 @@ class CategorySchema(PlainCategorySchema):
 
 
 class TagSchema(PlainTagSchema):
-    category_id = fields.Int(load_only=True)
     category = fields.Nested(PlainCategorySchema(), dump_only=True)
     items = fields.List(fields.Nested(PlainItemSchema()), dump_only=True)
 
