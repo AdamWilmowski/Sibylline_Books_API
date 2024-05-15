@@ -3,8 +3,8 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
-from models import HazardModel
-from schemas import HazardSchema
+from models import HazardModel, ItemModel
+from schemas import HazardSchema, HazardItemSchema
 
 blp = Blueprint("Hazards", __name__, description="Operations on hazards")
 
@@ -55,3 +55,20 @@ class Hazard(MethodView):
         db.session.delete(hazard)
         db.session.commit()
         return {"message": "Hazard deleted."}
+
+
+@blp.route("/item/<int:item_id>/hazard/<int:hazard_id>")
+class LinkHazardsToItem(MethodView):
+    @blp.response(201, HazardItemSchema)  # You need to define this schema
+    def post(self, item_id, hazard_id):
+        item = ItemModel.query.get_or_404(item_id)
+        hazard = HazardModel.query.get_or_404(hazard_id)
+
+        item.hazards.append(hazard)
+        try:
+            db.session.add(item)
+            db.session.commit()
+        except SQLAlchemyError:
+            abort(500, message="An error occurred linking the hazard to the item.")
+        return hazard
+

@@ -11,4 +11,4 @@ class ItemModel(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), unique=False, nullable=False)
     category = db.relationship("CategoryModel", back_populates="items")
     tags = db.relationship("TagModel", back_populates="items", secondary="item_tags")
-    hazards = db.relationship("HazardModel", secondary="hazard_items", back_populates="items")
+    hazards = db.relationship("HazardModel", secondary="hazard_items")
