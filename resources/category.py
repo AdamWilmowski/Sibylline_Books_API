@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required
 
 from db import db
 from models import CategoryModel
-from schemas import CategorySchema
+from schemas import CategorySchema, PlainCategorySchema
 from decorators import require_api_key
 
 
@@ -30,9 +30,9 @@ class Categories(MethodView):
 
 @blp.route("/category")
 class CategoriesList(MethodView):
-    @blp.response(201, CategorySchema(many=True))
+    @blp.response(201, PlainCategorySchema(many=True))
     def get(self):
-        return CategoryModel.query.all()
+        return CategoryModel.query.with_entities(CategoryModel.id, CategoryModel.name).all()
 
     @blp.arguments(CategorySchema)
     @blp.response(200, CategorySchema)
